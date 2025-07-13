@@ -1,0 +1,127 @@
+{
+  "foodItems": [
+    {
+      "category": "Pasta Night",
+      "title": "Spaghetti with crumbles",
+      "ingredients": [
+        "spaghetti",
+        "crumbles",
+        "sauce"
+      ],
+      "directions": "Boil spaghetti until al dente. In a separate pan, cook the crumbles until browned. Heat the sauce, then combine everything and serve warm.",
+      "keywords": {
+        "tags": [
+          "vegetarian",
+          "easy dinner",
+          "weeknight meal",
+          "pasta",
+          "comfort food"
+        ]
+      }
+    },
+    {
+      "category": "Veggie Night",
+      "title": "Stuffed Zucchini Boats",
+      "ingredients": [
+        "zucchini",
+        "rice",
+        "tomatoes",
+        "cheese",
+        "garlic"
+      ],
+      "directions": "Cut zucchini in half and hollow out. Sauté tomatoes, garlic, and cooked rice. Fill the zucchini with the mixture, top with cheese, and bake at 375°F for 25 minutes.",
+      "keywords": {
+        "tags": [
+          "zucchini",
+          "vegetarian",
+          "baked",
+          "garden fresh",
+          "healthy"
+        ]
+      }
+    },
+    {
+      "category": "Salad Night",
+      "title": "Cucumber Tomato Salad",
+      "ingredients": [
+        "cucumbers",
+        "tomatoes",
+        "red onion",
+        "olive oil",
+        "vinegar"
+      ],
+      "directions": "Slice cucumbers, tomatoes, and red onion. Toss with olive oil, vinegar, salt, and pepper. Chill before serving.",
+      "keywords": {
+        "tags": [
+          "no cook",
+          "fresh",
+          "summer salad",
+          "gluten free",
+          "quick"
+        ]
+      }
+    },
+    {
+      "category": "One-Pan Meal",
+      "title": "Roasted Tomato & Zucchini Pasta",
+      "ingredients": [
+        "pasta",
+        "zucchini",
+        "tomatoes",
+        "olive oil",
+        "parmesan"
+      ],
+      "directions": "Chop zucchini and tomatoes. Toss with olive oil and roast at 400°F for 20 minutes. Mix with cooked pasta and top with parmesan.",
+      "keywords": {
+        "tags": [
+          "roasted",
+          "vegetarian",
+          "easy cleanup",
+          "pasta",
+          "seasonal"
+        ]
+      }
+    },
+    {
+      "category": "Dessert",
+      "title": "Vanilla Yogurt with Honey and Cucumbers",
+      "ingredients": [
+        "vanilla yogurt",
+        "honey",
+        "thinly sliced cucumber",
+        "mint (optional)"
+      ],
+      "directions": "Spoon yogurt into bowls, drizzle with honey, and top with cucumber slices and mint if desired. Chill and serve cold.",
+      "keywords": {
+        "tags": [
+          "dessert",
+          "refreshing",
+          "light",
+          "cucumber",
+          "no bake"
+        ]
+      }
+    },
+    {
+      "category": "Dessert",
+      "title": "Zucchini Bread",
+      "ingredients": [
+        "zucchini",
+        "flour",
+        "eggs",
+        "sugar",
+        "cinnamon"
+      ],
+      "directions": "Grate zucchini and mix with eggs, sugar, and cinnamon. Add flour and bake at 350°F for 50 minutes in a loaf pan.",
+      "keywords": {
+        "tags": [
+          "dessert",
+          "baked",
+          "zucchini",
+          "sweet bread",
+          "snack"
+        ]
+      }
+    }
+  ]
+}
