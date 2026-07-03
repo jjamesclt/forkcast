@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Add Meal{% endblock %}
+{% block content %}
+<h1>➕ Add New Meal</h1>
+
+<div class="card">
+    <form method="POST" action="/meals/add">
+        <div class="form-group">
+            <label for="name">Meal Name *</label>
+            <input type="text" id="name" name="name" required placeholder="e.g. Tacos">
+        </div>
+
+        <div class="form-group">
+            <label for="meal_type">Meal Type</label>
+            <select id="meal_type" name="meal_type">
+                {% for mt in meal_types %}
+                <option value="{{ mt }}">{{ mt | replace('-', ' ') | title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Brief description..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags (comma separated)</label>
+            <input type="text" id="tags" name="tags" placeholder="e.g. quick-meal, comfort-food, weeknight">
+            {% if tags %}
+            <small style="color: var(--text-muted);">Existing tags:
+                {% for tag in tags %}{{ tag.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+            </small>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" placeholder="Any additional notes..."></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="active" name="active" checked>
+            <label for="active" style="margin-bottom: 0;">Active</label>
+        </div>
+
+        <div class="flex mt-1">
+            <button type="submit" class="btn btn-primary">Add Meal</button>
+            <a href="/meals" class="btn" style="color: var(--text-muted);">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<div class="card" id="llm-suggest" style="display:none;">
+    <h3>🤖 Tag Suggestions</h3>
+    <p id="llm-tags" style="color: var(--text-muted);"></p>
+</div>
+
+<script>
+// Optional LLM tag suggestions
+const nameInput = document.getElementById('name');
+const tagsInput = document.getElementById('tags');
+let debounce;
+
+nameInput.addEventListener('input', function() {
+    clearTimeout(debounce);
+    debounce = setTimeout(async () => {
+        if (nameInput.value.length < 3) return;
+        try {
+            const resp = await fetch('/llm/suggest-tags', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    meal_name: nameInput.value,
+                    description: document.getElementById('description').value
+                })
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                document.getElementById('llm-suggest').style.display = 'block';
+                document.getElementById('llm-tags').textContent = data.tags;
+            }
+        } catch(e) { /* LLM optional */ }
+    }, 1000);
+});
+</script>
+{% endblock %}

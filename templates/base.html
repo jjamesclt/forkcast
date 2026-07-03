@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForkCast - {% block title %}Home{% endblock %}</title>
+    <style>
+        :root {
+            --primary: #e07c3e;
+            --primary-dark: #c4652f;
+            --bg: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-input: #0f3460;
+            --text: #eaeaea;
+            --text-muted: #a0a0b0;
+            --success: #4caf50;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --border: #2a2a4a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        nav {
+            background: var(--bg-card);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        nav .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        nav .logo span { color: var(--text); }
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        nav a:hover, nav a.active {
+            color: var(--text);
+            background: var(--bg-input);
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        h1, h2, h3 { color: var(--text); margin-bottom: 1rem; }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.2rem;
+            color: var(--text-muted);
+        }
+        .tag.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .tag a { color: inherit; text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th { color: var(--text-muted); font-weight: 500; }
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .badge-warning { background: var(--warning); color: #000; }
+        .badge-danger { background: var(--danger); color: white; }
+        .badge-muted { background: var(--border); color: var(--text-muted); }
+        .de-pref-strong { opacity: 0.4; }
+        .de-pref-medium { opacity: 0.6; }
+        .de-pref-light { opacity: 0.8; }
+        .vetoed { text-decoration: line-through; opacity: 0.4; }
+        .flex { display: flex; gap: 0.5rem; align-items: center; }
+        .flex-wrap { flex-wrap: wrap; }
+        .mt-1 { margin-top: 1rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .user-select {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+        .user-select select {
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        .checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">Fork<span>Cast</span></a>
+        <a href="/" {% if request.endpoint == 'main.index' %}class="active"{% endif %}>Tonight</a>
+        <a href="/meals" {% if request.endpoint and 'meals' in request.endpoint %}class="active"{% endif %}>Meals</a>
+        <a href="/history" {% if request.endpoint and 'history' in request.endpoint %}class="active"{% endif %}>History</a>
+        <a href="/settings" {% if request.endpoint and 'settings' in request.endpoint %}class="active"{% endif %}>Settings</a>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

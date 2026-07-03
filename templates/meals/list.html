@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Meals{% endblock %}
+{% block content %}
+<div class="flex" style="justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1>🍲 Meal Database</h1>
+    <a href="/meals/add" class="btn btn-primary">+ Add Meal</a>
+</div>
+
+{% if meals %}
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meal in meals %}
+            <tr style="{% if not meal.active %}opacity: 0.5;{% endif %}">
+                <td>
+                    <strong>{{ meal.name }}</strong>
+                    {% if meal.description %}
+                    <br><small style="color: var(--text-muted);">{{ meal.description }}</small>
+                    {% endif %}
+                </td>
+                <td>{{ meal.meal_type }}</td>
+                <td>
+                    {% for tag in meal.tags %}
+                    <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if meal.active %}
+                    <span class="badge" style="background: var(--success); color: white;">Active</span>
+                    {% else %}
+                    <span class="badge badge-muted">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="flex">
+                        <a href="/meals/edit/{{ meal.id }}" class="btn btn-primary btn-sm">Edit</a>
+                        <form method="POST" action="/meals/toggle/{{ meal.id }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm {% if meal.active %}btn-warning{% else %}btn-success{% endif %}">
+                                {% if meal.active %}Disable{% else %}Enable{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card empty-state">
+    <p>No meals yet. Add your first meal to get started!</p>
+</div>
+{% endif %}
+{% endblock %}

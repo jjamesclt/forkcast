@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<h1>⚙️ Settings</h1>
+<p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+    Configuration is read from the <code>.env</code> file. Changes require restarting the container.
+</p>
+
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Setting</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in settings.items() %}
+            <tr>
+                <td><strong>{{ key }}</strong></td>
+                <td style="color: var(--text-muted);">
+                    {% if value is iterable and value is not string %}
+                    {{ value | join(', ') }}
+                    {% else %}
+                    {{ value }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

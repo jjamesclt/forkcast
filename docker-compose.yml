@@ -1,0 +1,13 @@
+services:
+  forkcast:
+    build: .
+    ports:
+      - "${HTTP_PORT:-5005}:5005"
+    volumes:
+      - forkcast_data:/data
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  forkcast_data:

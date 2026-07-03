@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Tonight's Dinner{% endblock %}
+{% block content %}
+<div class="flex" style="justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1>🍽️ Tonight's Dinner</h1>
+    <form method="POST" action="/set-user" class="user-select">
+        <label for="user_id" style="color: var(--text-muted);">Who's deciding:</label>
+        <select name="user_id" id="user_id" onchange="this.form.submit()">
+            <option value="">Select user...</option>
+            {% for user in users %}
+            <option value="{{ user.id }}" {% if current_user and current_user.id == user.id %}selected{% endif %}>
+                {{ user.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
+{% if not current_user %}
+<div class="card empty-state">
+    <p>👆 Select your name above to get started.</p>
+</div>
+{% else %}
+
+{% if not meal_session %}
+<div class="card">
+    <p>No dinner session started for today.</p>
+    <form method="POST" action="/start-session" class="mt-1">
+        <button type="submit" class="btn btn-primary">Start Tonight's Session</button>
+    </form>
+</div>
+{% else %}
+
+{% if meal_session.status == 'selected' %}
+<div class="card" style="border-color: var(--success);">
+    <h2 style="color: var(--success);">✅ Dinner Selected!</h2>
+    <p style="font-size: 1.3rem; margin-top: 0.5rem;">{{ meal_session.selected_meal.name }}</p>
+    <p style="color: var(--text-muted);">Selected by {{ meal_session.selected_by.name }}</p>
+</div>
+{% else %}
+
+<!-- Tag filters -->
+<div class="card">
+    <h3>Filter by Tags</h3>
+    <div class="flex flex-wrap mt-1">
+        {% for tag in tags %}
+        <a href="?{% for t in selected_tags %}{% if t != tag.name %}tags={{ t }}&{% endif %}{% endfor %}{% if tag.name not in selected_tags %}tags={{ tag.name }}{% endif %}"
+           class="tag {% if tag.name in selected_tags %}active{% endif %}">
+            {{ tag.name }}
+        </a>
+        {% endfor %}
+        {% if selected_tags %}
+        <a href="/" class="tag" style="border-color: var(--danger);">✕ Clear</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Meal list for voting -->
+<div class="card">
+    <h3>Available Meals</h3>
+    {% if meal_scores %}
+    <table>
+        <thead>
+            <tr>
+                <th>Meal</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Last Eaten</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meal, score, days_ago in meal_scores %}
+            <tr class="{% if meal.id in vetoed_meal_ids %}vetoed{% elif days_ago is not none and days_ago <= 1 %}de-pref-strong{% elif days_ago is not none and days_ago <= 3 %}de-pref-medium{% elif days_ago is not none and days_ago <= 7 %}de-pref-light{% endif %}">
+                <td>
+                    <strong>{{ meal.name }}</strong>
+                    {% if days_ago is not none and days_ago <= 7 %}
+                    <span class="badge badge-muted">{{ days_ago }}d ago</span>
+                    {% endif %}
+                </td>
+                <td>{{ meal.meal_type }}</td>
+                <td>
+                    {% for tag in meal.tags %}
+                    <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if days_ago is not none %}
+                    {{ days_ago }} day{{ 's' if days_ago != 1 else '' }} ago
+                    {% else %}
+                    Never
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="flex">
+                        {% if meal.id not in vetoed_meal_ids %}
+                        <!-- Vote button -->
+                        <form method="POST" action="/vote" style="display:inline;">
+                            <input type="hidden" name="meal_id" value="{{ meal.id }}">
+                            <input type="hidden" name="session_id" value="{{ meal_session.id }}">
+                            <input type="hidden" name="vote_type" value="vote">
+                            <input type="hidden" name="selected_tags" value="{{ selected_tags | join(',') }}">
+                            <button type="submit" class="btn btn-success btn-sm"
+                                {% if votes.get((meal.id, current_user.id)) == 'vote' %}style="outline: 2px solid white;"{% endif %}>
+                                👍
+                            </button>
+                        </form>
+                        <!-- Veto button -->
+                        <form method="POST" action="/vote" style="display:inline;">
+                            <input type="hidden" name="meal_id" value="{{ meal.id }}">
+                            <input type="hidden" name="session_id" value="{{ meal_session.id }}">
+                            <input type="hidden" name="vote_type" value="veto">
+                            <input type="hidden" name="selected_tags" value="{{ selected_tags | join(',') }}">
+                            <button type="submit" class="btn btn-danger btn-sm">👎</button>
+                        </form>
+                        <!-- Select button -->
+                        <form method="POST" action="/select-meal" style="display:inline;">
+                            <input type="hidden" name="meal_id" value="{{ meal.id }}">
+                            <input type="hidden" name="session_id" value="{{ meal_session.id }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Pick This</button>
+                        </form>
+                        {% else %}
+                        <span style="color: var(--text-muted);">Vetoed</span>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>No meals yet! <a href="/meals/add" style="color: var(--primary);">Add some meals</a> to get started.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Cancel session -->
+<form method="POST" action="/sessions/cancel/{{ meal_session.id }}">
+    <button type="submit" class="btn btn-warning btn-sm">Cancel Session</button>
+</form>
+
+{% endif %}
+{% endif %}
+{% endif %}
+{% endblock %}

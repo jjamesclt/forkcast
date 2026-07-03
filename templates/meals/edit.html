@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Edit Meal{% endblock %}
+{% block content %}
+<h1>✏️ Edit Meal</h1>
+
+<div class="card">
+    <form method="POST" action="/meals/edit/{{ meal.id }}">
+        <div class="form-group">
+            <label for="name">Meal Name *</label>
+            <input type="text" id="name" name="name" required value="{{ meal.name }}">
+        </div>
+
+        <div class="form-group">
+            <label for="meal_type">Meal Type</label>
+            <select id="meal_type" name="meal_type">
+                {% for mt in meal_types %}
+                <option value="{{ mt }}" {% if meal.meal_type == mt %}selected{% endif %}>
+                    {{ mt | replace('-', ' ') | title }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description">{{ meal.description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags (comma separated)</label>
+            <input type="text" id="tags" name="tags"
+                   value="{{ meal.tags | map(attribute='name') | join(', ') }}">
+            {% if tags %}
+            <small style="color: var(--text-muted);">Existing tags:
+                {% for tag in tags %}{{ tag.name }}{% if not loop.last %}, {% endif %}{% endfor %}
+            </small>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes">{{ meal.notes }}</textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="active" name="active" {% if meal.active %}checked{% endif %}>
+            <label for="active" style="margin-bottom: 0;">Active</label>
+        </div>
+
+        <div class="flex mt-1">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="/meals" class="btn" style="color: var(--text-muted);">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
